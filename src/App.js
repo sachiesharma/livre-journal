@@ -16,6 +16,9 @@ import Sachie from "./Sachie";
 import TextField from "@material-ui/core/TextField";
 import firebase from "firebase/app";
 import logo from "./logo.svg";
+import Login from "./Login";
+
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -27,20 +30,6 @@ const firebaseConfig = {
   appId: "1:62247619992:web:bf220a6abf9173ff8eafed",
   measurementId: "G-SNXLPFL2Z5",
 };
-
-function Login() {
-  return (
-    <Button
-      variant="contained"
-      onClick={() => {
-        const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithPopup(googleAuthProvider);
-      }}
-    >
-      Sign In with Google
-    </Button>
-  );
-}
 
 function AvatarHeader() {
   const { data: user } = useUser();
@@ -63,31 +52,60 @@ function AvatarHeader() {
   );
 }
 
+function Main2() {
+  return (
+    <>
+      <AvatarHeader />
+      <Link to="/">Main</Link>
+    </>
+  );
+}
+
+function Main() {
+  return (
+    <>
+      <Button
+        variant="contained"
+        onClick={() => {
+          firebase.auth().signOut();
+        }}
+      >
+        Sign Out
+      </Button>
+      <AvatarHeader />
+      <Sachie />
+      <Paper>
+        <TextField id="outlined-basic" label="Outlined" variant="outlined" />
+      </Paper>
+      <img src={logo} className="App-logo" alt="logo" />
+      <p>Welcome to Livre Journal! :)</p>
+      <Link to="/main2">Main 2</Link>
+    </>
+  );
+}
+
+function Routing() {
+  return (
+    <Router>
+      <Switch>
+        <Route path="/main2">
+          <Main2 />
+        </Route>
+        <Route path="/">
+          <Main />
+        </Route>
+      </Switch>
+    </Router>
+  );
+}
+
 function App() {
   return (
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
       <div className="App">
         <header className="App-header">
           <AuthCheck fallback={<Login />}>
-            <Button
-              variant="contained"
-              onClick={() => {
-                firebase.auth().signOut();
-              }}
-            >
-              Sign Out
-            </Button>
-            <AvatarHeader />
-            <Sachie />
-            <Paper>
-              <TextField
-                id="outlined-basic"
-                label="Outlined"
-                variant="outlined"
-              />
-            </Paper>
-            <img src={logo} className="App-logo" alt="logo" />
-            <p>Welcome to Livre Journal! :)</p>
+            <Routing />
           </AuthCheck>
         </header>
       </div>
