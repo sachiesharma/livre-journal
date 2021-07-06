@@ -63,7 +63,7 @@ function Main2() {
 
 function Main() {
   return (
-    <>
+    <header className="App-header">
       <Button
         variant="contained"
         onClick={() => {
@@ -80,7 +80,7 @@ function Main() {
       <img src={logo} className="App-logo" alt="logo" />
       <p>Welcome to Livre Journal! :)</p>
       <Link to="/main2">Main 2</Link>
-    </>
+    </header>
   );
 }
 
@@ -103,11 +103,9 @@ function App() {
   return (
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
       <div className="App">
-        <header className="App-header">
-          <AuthCheck fallback={<Login />}>
-            <Routing />
-          </AuthCheck>
-        </header>
+        <AuthCheck fallback={<Login />}>
+          <Routing />
+        </AuthCheck>
       </div>
     </FirebaseAppProvider>
   );
