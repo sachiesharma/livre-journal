@@ -1,10 +1,17 @@
-import "./App.css";
-import "firebase/auth";
+import {
+  Container,
+  CssBaseline,
+  LinearProgress,
+  ThemeProvider,
+  createTheme,
+  useMediaQuery,
+} from "@material-ui/core";
 
-import { AuthCheck, FirebaseAppProvider } from "reactfire";
-
-import Login from "./Login";
-import Routing from "./Routing";
+import { FirebaseAppProvider } from "reactfire";
+import Routes from "./Routes";
+import { Suspense } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { useMemo } from "react";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -17,16 +24,49 @@ const firebaseConfig = {
   measurementId: "G-SNXLPFL2Z5",
 };
 
-function App() {
+const useStyles = makeStyles((theme) => ({
+  "@global": {
+    body: {
+      backgroundColor: theme.palette.background.paper,
+    },
+  },
+  container: {
+    minHeight: "100vh",
+    backgroundColor: theme.palette.background.default,
+  },
+}));
+
+function Main() {
+  const classes = useStyles();
+
   return (
-    <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-      <div className="App">
-        <AuthCheck fallback={<Login />}>
-          <Routing />
-        </AuthCheck>
-      </div>
-    </FirebaseAppProvider>
+    <Container disableGutters className={classes.container} maxWidth="sm">
+      <Suspense fallback={<LinearProgress />}>
+        <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
+          <Routes />
+        </FirebaseAppProvider>
+      </Suspense>
+    </Container>
   );
 }
 
-export default App;
+export default function App() {
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          type: prefersDarkMode ? "dark" : "light",
+        },
+      }),
+    [prefersDarkMode]
+  );
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Main />
+    </ThemeProvider>
+  );
+}
