@@ -1,7 +1,8 @@
+import "firebase/auth";
+
 import {
   Container,
   CssBaseline,
-  LinearProgress,
   ThemeProvider,
   createTheme,
   useMediaQuery,
@@ -9,7 +10,6 @@ import {
 
 import { FirebaseAppProvider } from "reactfire";
 import Routes from "./Routes";
-import { Suspense } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMemo } from "react";
 
@@ -41,11 +41,9 @@ function Main() {
 
   return (
     <Container disableGutters className={classes.container} maxWidth="sm">
-      <Suspense fallback={<LinearProgress />}>
-        <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
-          <Routes />
-        </FirebaseAppProvider>
-      </Suspense>
+      <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+        <Routes />
+      </FirebaseAppProvider>
     </Container>
   );
 }

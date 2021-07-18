@@ -1,48 +1,35 @@
-import { Box, Container, Fab, Grid } from "@material-ui/core";
-import { useFirestore, useUser } from "reactfire";
+import { LinearProgress, List } from "@material-ui/core";
+import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 
-import AddIcon from "@material-ui/icons/Add";
-import AvatarHeader from "./AvatarHeader";
-import Entries from "./Entries";
-import { Link } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
+import Review from "./Review.js";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    position: "fixed",
-    bottom: theme.spacing(2),
-  },
-}));
-
-export default function Encouragements() {
-  const classes = useStyles();
-
+export default function Reviews() {
   const { data: user } = useUser();
-
-  const entryId = useFirestore()
+  const entriesRef = useFirestore()
     .collection("users")
     .doc(user.uid)
     .collection("entries")
-    .doc().id;
+    .orderBy("date", "desc")
+    .limit(10);
+  const { status, data: entries } = useFirestoreCollectionData(entriesRef, {
+    idField: "id",
+  });
+
+  // easily check the loading status
+  if (status === "loading") {
+    return <LinearProgress />;
+  }
 
   return (
-    <>
-      <AvatarHeader />
-      <Entries />
-      <Container disableGutters className={classes.container} maxWidth="sm">
-        <Box ml={2} mr={2}>
-          <Grid container justifyContent="flex-end">
-            <Fab
-              color="primary"
-              aria-label="add"
-              component={Link}
-              to={`/editor/${entryId}`}
-            >
-              <AddIcon />
-            </Fab>
-          </Grid>
-        </Box>
-      </Container>
-    </>
+    <List>
+      {entries.map((entry) => (
+        <Review
+          key={entry.id}
+          id={entry.id}
+          date={entry.date.toDate()}
+          content={entry.content}
+        />
+      ))}
+    </List>
   );
 }

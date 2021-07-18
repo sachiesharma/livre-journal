@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EntryEdit() {
+export default function ReviewEdit() {
   const classes = useStyles();
   const { entryId } = useParams();
   const { data: user } = useUser();

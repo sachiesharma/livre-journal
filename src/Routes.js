@@ -1,9 +1,9 @@
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { useAuth, useSigninCheck } from "reactfire";
 
-import EntryEdit from "./EntryEdit";
 import { LinearProgress } from "@material-ui/core";
-import Reviews from "./Reviews";
+import Main from "./Main";
+import ReviewEdit from "./ReviewEdit";
 import { StyledFirebaseAuth } from "react-firebaseui";
 
 function Login() {
@@ -36,10 +36,10 @@ export default function Routes() {
     <Router>
       <Switch>
         <Route path="/editor/:entryId">
-          <EntryEdit />
+          <ReviewEdit />
         </Route>
         <Route path="/">
-          <Reviews />
+          <Main />
         </Route>
       </Switch>
     </Router>
