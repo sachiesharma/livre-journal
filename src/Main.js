@@ -1,10 +1,11 @@
 import "firebase/firestore";
 
-import { Box, Container, Fab, Grid } from "@material-ui/core";
-import { useFirestore, useUser } from "reactfire";
+import { Box, Container, Fab, Grid, LinearProgress } from "@material-ui/core";
+import { useAuth, useFirestore, useUser } from "reactfire";
 
 import AddIcon from "@material-ui/icons/Add";
 import AvatarHeader from "./AvatarHeader";
+import { ExitToApp } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import Reviews from "./Reviews";
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,10 +19,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Main() {
   const classes = useStyles();
+  const { status, data: user } = useUser();
+  const auth = useAuth();
+  const firestore = useFirestore();
 
-  const { data: user } = useUser();
+  if (user === null || status === "loading") {
+    return <LinearProgress />;
+  }
 
-  const entryId = useFirestore()
+  const entryId = firestore
     .collection("users")
     .doc(user.uid)
     .collection("entries")
@@ -34,6 +40,13 @@ export default function Main() {
       <Container disableGutters className={classes.container} maxWidth="sm">
         <Box ml={2} mr={2}>
           <Grid container justifyContent="flex-end">
+            <Fab
+              color="primary"
+              aria-label="add"
+              onClick={async () => await auth.signOut()}
+            >
+              <ExitToApp />
+            </Fab>
             <Fab
               color="primary"
               aria-label="add"

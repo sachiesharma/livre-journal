@@ -8,11 +8,9 @@ import {
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
+import { useHistory, useParams } from "react-router-dom";
 
 import DoneIcon from "@material-ui/icons/Done";
-import { Link } from "react-router-dom";
-import { useDebouncedCallback } from "use-debounce";
-import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   textField: {
@@ -26,13 +24,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ReviewEdit() {
   const classes = useStyles();
+  const history = useHistory();
   const { entryId } = useParams();
   const { data: user } = useUser();
+
   const entryRef = useFirestore()
     .collection("users")
     .doc(user.uid)
     .collection("entries")
     .doc(entryId);
+
   const { status, data: entry } = useFirestoreDocData(entryRef, {
     idField: "id",
   });
@@ -45,18 +46,17 @@ export default function ReviewEdit() {
 
   const updateContent = (event) => {
     setContent(event.target.value);
-    updateFirestoreContent(event.target.value);
   };
 
-  const updateFirestoreContent = useDebouncedCallback((content) => {
+  const updateFirestoreContent = () => {
     const payload = { content };
     if (!entry?.date) {
       payload.date = new Date();
     }
     entryRef.set(payload, { merge: true });
-  }, 1000);
+    history.push("/");
+  };
 
-  // easily check the loading status
   if (status === "loading") {
     return <LinearProgress />;
   }
@@ -75,8 +75,7 @@ export default function ReviewEdit() {
           color="primary"
           className={classes.fab}
           aria-label="done"
-          component={Link}
-          to="/"
+          onClick={updateFirestoreContent}
         >
           <DoneIcon />
         </Fab>
