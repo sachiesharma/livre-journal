@@ -1,11 +1,4 @@
-import {
-  Box,
-  Fab,
-  Grid,
-  LinearProgress,
-  TextField,
-  makeStyles,
-} from "@material-ui/core";
+import { Box, Fab, Grid, TextField, makeStyles } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import { useHistory, useParams } from "react-router-dom";
@@ -34,7 +27,7 @@ export default function ReviewEdit() {
     .collection("entries")
     .doc(entryId);
 
-  const { status, data: entry } = useFirestoreDocData(entryRef, {
+  const { data: entry } = useFirestoreDocData(entryRef, {
     idField: "id",
   });
 
@@ -56,10 +49,6 @@ export default function ReviewEdit() {
     entryRef.set(payload, { merge: true });
     history.push("/");
   };
-
-  if (status === "loading") {
-    return <LinearProgress />;
-  }
 
   return (
     <Box p={2}>
