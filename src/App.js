@@ -6,8 +6,12 @@ import {
   ThemeProvider,
   createTheme,
   useMediaQuery,
+  AppBar,
+  Toolbar,
+  IconButton,
 } from "@material-ui/core";
 
+import MoreIcon from "@material-ui/icons/MoreVert";
 import { FirebaseAppProvider } from "reactfire";
 import Routes from "./Routes";
 import { makeStyles } from "@material-ui/core/styles";
@@ -30,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.background.paper,
     },
   },
+  grow: {
+    flexGrow: 1,
+  },
   container: {
     minHeight: "100vh",
     backgroundColor: theme.palette.background.default,
@@ -42,6 +49,21 @@ function Main() {
   return (
     <Container disableGutters className={classes.container} maxWidth="sm">
       <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+        <AppBar position="static">
+          <Toolbar>
+            <div className={classes.grow} />
+            <div className={classes.sectionMobile}>
+              <IconButton
+                aria-label="show more"
+                aria-haspopup="true"
+                //onClick={handleMobileMenuOpen}
+                color="inherit"
+              >
+                <MoreIcon />
+              </IconButton>
+            </div>
+          </Toolbar>
+        </AppBar>
         <Routes />
       </FirebaseAppProvider>
     </Container>
