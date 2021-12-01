@@ -2,11 +2,12 @@ import { Box, Fab, Grid, TextField, makeStyles } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import { useHistory, useParams } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
-import Rating from "@material-ui/lab/Rating";
-import FavoriteIcon from "@material-ui/icons/Favorite";
+
 import DoneIcon from "@material-ui/icons/Done";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import Rating from "@material-ui/lab/Rating";
 import Typography from "@material-ui/core/Typography";
+import { withStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   textField: {
@@ -44,27 +45,27 @@ export default function ReviewEdit() {
   });
 
   const [content, setContent] = useState("");
-  const [characterRating, setCharacterRating] = useState("");
-  const [writingRating, setWritingRating] = useState("");
-  const [plotDevelopmentRating, setPlotDevelopmentRating] = useState("");
-  const [originalityRating, setOriginalityRating] = useState("");
-  const [engagementRating, setEngagementRating] = useState("");
-  const [insightfulnessRating, setInsightfulnessRating] = useState("");
-  const [comprehensivenessRating, setComprehensivenessRating] = useState("");
-  const [impactfulnessRating, setImpactfulnessRating] = useState("");
-  const [overallRating, setOverallRating] = useState("");
+  const [characterRating, setCharacterRating] = useState(0);
+  const [writingRating, setWritingRating] = useState(0);
+  const [plotDevelopmentRating, setPlotDevelopmentRating] = useState(0);
+  const [originalityRating, setOriginalityRating] = useState(0);
+  const [engagementRating, setEngagementRating] = useState(0);
+  const [insightfulnessRating, setInsightfulnessRating] = useState(0);
+  const [comprehensivenessRating, setComprehensivenessRating] = useState(0);
+  const [impactfulnessRating, setImpactfulnessRating] = useState(0);
+  const [overallRating, setOverallRating] = useState(0);
 
   useEffect(() => {
     setContent(entry?.content || "");
-    setCharacterRating(entry?.characterRating);
-    setWritingRating(entry?.writingRating);
-    setPlotDevelopmentRating(entry?.plotDevelopmentRating);
-    setOriginalityRating(entry?.originalityRating);
-    setEngagementRating(entry?.engagementRating);
-    setInsightfulnessRating(entry?.insightfulnessRating);
-    setComprehensivenessRating(entry?.comprehensivenessRating);
-    setImpactfulnessRating(entry?.impactfulnessRating);
-    setOverallRating(entry?.overallRating);
+    setCharacterRating(entry?.characterRating || 0);
+    setWritingRating(entry?.writingRating || 0);
+    setPlotDevelopmentRating(entry?.plotDevelopmentRating || 0);
+    setOriginalityRating(entry?.originalityRating || 0);
+    setEngagementRating(entry?.engagementRating || 0);
+    setInsightfulnessRating(entry?.insightfulnessRating || 0);
+    setComprehensivenessRating(entry?.comprehensivenessRating || 0);
+    setImpactfulnessRating(entry?.impactfulnessRating || 0);
+    setOverallRating(entry?.overallRating || 0);
   }, [entry]);
 
   const updateContent = (event) => {
@@ -100,95 +101,50 @@ export default function ReviewEdit() {
         value={content}
         onChange={updateContent}
       />
-      <Typography component="legend">Characters</Typography>
-      <StyledRating
-        name="character-rating"
-        precision={0.5}
-        icon={<FavoriteIcon fontSize="inherit" />}
-        value={characterRating}
-        onChange={(event, newRating) => {
-          setCharacterRating(newRating);
-        }}
+      <LivreRating
+        label="Characters"
+        rating={characterRating}
+        setRating={setCharacterRating}
       />
-      <Typography component="legend">Writing</Typography>
-      <StyledRating
-        name="writing-rating"
-        precision={0.5}
-        icon={<FavoriteIcon fontSize="inherit" />}
-        value={writingRating}
-        onChange={(event, newRating) => {
-          setWritingRating(newRating);
-        }}
+      <LivreRating
+        label="Writing"
+        rating={writingRating}
+        setRating={setWritingRating}
       />
-      <Typography component="legend">Plot Development</Typography>
-      <StyledRating
-        name="plotDevelopment-rating"
-        precision={0.5}
-        icon={<FavoriteIcon fontSize="inherit" />}
-        value={plotDevelopmentRating}
-        onChange={(event, newRating) => {
-          setPlotDevelopmentRating(newRating);
-        }}
+      <LivreRating
+        label="Plot Development"
+        rating={plotDevelopmentRating}
+        setRating={setPlotDevelopmentRating}
       />
-      <Typography component="legend">Originality</Typography>
-      <StyledRating
-        name="originality-rating"
-        precision={0.5}
-        icon={<FavoriteIcon fontSize="inherit" />}
-        value={originalityRating}
-        onChange={(event, newRating) => {
-          setOriginalityRating(newRating);
-        }}
+      <LivreRating
+        label="Originality"
+        rating={originalityRating}
+        setRating={setOriginalityRating}
       />
-      <Typography component="legend">Engagement</Typography>
-      <StyledRating
-        name="engagement-rating"
-        precision={0.5}
-        icon={<FavoriteIcon fontSize="inherit" />}
-        value={engagementRating}
-        onChange={(event, newRating) => {
-          setEngagementRating(newRating);
-        }}
+      <LivreRating
+        label="Engagement"
+        rating={engagementRating}
+        setRating={setEngagementRating}
       />
-      <Typography component="legend">Insightfulnes</Typography>
-      <StyledRating
-        name="insightfulness-rating"
-        precision={0.5}
-        icon={<FavoriteIcon fontSize="inherit" />}
-        value={insightfulnessRating}
-        onChange={(event, newRating) => {
-          setInsightfulnessRating(newRating);
-        }}
+      <LivreRating
+        label="Insightfulnes"
+        rating={insightfulnessRating}
+        setRating={setInsightfulnessRating}
       />
-      <Typography component="legend">Comprehensiveness</Typography>
-      <StyledRating
-        name="comprehensiveness-rating"
-        precision={0.5}
-        icon={<FavoriteIcon fontSize="inherit" />}
-        value={comprehensivenessRating}
-        onChange={(event, newRating) => {
-          setComprehensivenessRating(newRating);
-        }}
+      <LivreRating
+        label="Comprehensiveness"
+        rating={comprehensivenessRating}
+        setRating={setComprehensivenessRating}
       />
-      <Typography component="legend">Impactfulness</Typography>
-      <StyledRating
-        name="impactfulness-rating"
-        precision={0.5}
-        icon={<FavoriteIcon fontSize="inherit" />}
-        value={impactfulnessRating}
-        onChange={(event, newRating) => {
-          setImpactfulnessRating(newRating);
-        }}
+      <LivreRating
+        label="Impactfulness"
+        rating={impactfulnessRating}
+        setRating={setImpactfulnessRating}
       />
-      <Typography component="legend">Overall Rating</Typography>
-      <StyledRating
-        name="overall-rating"
-        precision={0.5}
-        icon={<FavoriteIcon fontSize="inherit" />}
-        value={overallRating}
-        onChange={(event, newRating) => {
-          setOverallRating(newRating);
-        }}
+      <LivreRating
+        label="Overall Rating"
+        rating={overallRating}
+        setRating={setOverallRating}
       />
       <Grid container justifyContent="flex-end">
         <Fab
@@ -201,5 +157,22 @@ export default function ReviewEdit() {
         </Fab>
       </Grid>
     </Box>
+  );
+}
+
+function LivreRating({ label, rating, setRating }) {
+  return (
+    <>
+      <Typography component="legend">{label}</Typography>
+      <StyledRating
+        name={`${label}-rating`}
+        precision={0.5}
+        icon={<FavoriteIcon fontSize="inherit" />}
+        value={rating}
+        onChange={(event, newRating) => {
+          setRating(newRating);
+        }}
+      />
+    </>
   );
 }

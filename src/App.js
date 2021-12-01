@@ -1,18 +1,18 @@
 import "firebase/auth";
 
 import {
+  AppBar,
   Container,
   CssBaseline,
+  IconButton,
   ThemeProvider,
+  Toolbar,
   createTheme,
   useMediaQuery,
-  AppBar,
-  Toolbar,
-  IconButton,
 } from "@material-ui/core";
 
-import MoreIcon from "@material-ui/icons/MoreVert";
 import { FirebaseAppProvider } from "reactfire";
+import MoreIcon from "@material-ui/icons/MoreVert";
 import Routes from "./Routes";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMemo } from "react";
