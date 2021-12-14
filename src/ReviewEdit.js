@@ -1,4 +1,12 @@
-import { Box, Fab, Grid, TextField, makeStyles } from "@material-ui/core";
+import {
+  Box,
+  Fab,
+  FormControlLabel,
+  Grid,
+  Switch,
+  TextField,
+  makeStyles,
+} from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import { useHistory, useParams } from "react-router-dom";
@@ -54,6 +62,7 @@ export default function ReviewEdit() {
   const [comprehensivenessRating, setComprehensivenessRating] = useState(0);
   const [impactfulnessRating, setImpactfulnessRating] = useState(0);
   const [overallRating, setOverallRating] = useState(0);
+  const [read, setRead] = useState(false);
 
   useEffect(() => {
     setContent(entry?.content || "");
@@ -66,6 +75,7 @@ export default function ReviewEdit() {
     setComprehensivenessRating(entry?.comprehensivenessRating || 0);
     setImpactfulnessRating(entry?.impactfulnessRating || 0);
     setOverallRating(entry?.overallRating || 0);
+    setRead(entry?.read || false);
   }, [entry]);
 
   const updateContent = (event) => {
@@ -84,6 +94,7 @@ export default function ReviewEdit() {
       comprehensivenessRating,
       impactfulnessRating,
       overallRating,
+      read,
     };
     if (!entry?.date) {
       payload.date = new Date();
@@ -100,6 +111,16 @@ export default function ReviewEdit() {
         placeholder="Book title"
         value={content}
         onChange={updateContent}
+      />
+      <FormControlLabel
+        control={
+          <Switch
+            checked={read}
+            onChange={(event) => setRead(event.target.checked)}
+            color="primary"
+          />
+        }
+        label="Read"
       />
       <LivreRating
         label="Characters"

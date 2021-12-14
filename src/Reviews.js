@@ -1,4 +1,4 @@
-import { LinearProgress, List } from "@material-ui/core";
+import { LinearProgress, List, ListSubheader } from "@material-ui/core";
 import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
 
 import Review from "./Review.js";
@@ -22,14 +22,28 @@ export default function Reviews() {
 
   return (
     <List>
-      {entries.map((entry) => (
-        <Review
-          key={entry.id}
-          id={entry.id}
-          date={entry.date.toDate()}
-          content={entry.content}
-        />
-      ))}
+      <ListSubheader>Want to read</ListSubheader>
+      {entries
+        .filter((entry) => !entry.read)
+        .map((entry) => (
+          <Review
+            key={entry.id}
+            id={entry.id}
+            date={entry.date.toDate()}
+            content={entry.content}
+          />
+        ))}
+      <ListSubheader>Done</ListSubheader>
+      {entries
+        .filter((entry) => entry.read)
+        .map((entry) => (
+          <Review
+            key={entry.id}
+            id={entry.id}
+            date={entry.date.toDate()}
+            content={entry.content}
+          />
+        ))}
     </List>
   );
 }
