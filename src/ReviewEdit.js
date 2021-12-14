@@ -1,3 +1,4 @@
+import "date-fns";
 import {
   Box,
   Fab,
@@ -16,6 +17,11 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import Rating from "@material-ui/lab/Rating";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
 
 const useStyles = makeStyles((theme) => ({
   textField: {
@@ -53,6 +59,7 @@ export default function ReviewEdit() {
   });
 
   const [content, setContent] = useState("");
+  const [startDate, setStartDate] = useState(null);
   const [characterRating, setCharacterRating] = useState(0);
   const [writingRating, setWritingRating] = useState(0);
   const [plotDevelopmentRating, setPlotDevelopmentRating] = useState(0);
@@ -66,6 +73,7 @@ export default function ReviewEdit() {
 
   useEffect(() => {
     setContent(entry?.content || "");
+    setStartDate(entry?.startDate?.toDate() || new Date());
     setCharacterRating(entry?.characterRating || 0);
     setWritingRating(entry?.writingRating || 0);
     setPlotDevelopmentRating(entry?.plotDevelopmentRating || 0);
@@ -77,6 +85,12 @@ export default function ReviewEdit() {
     setOverallRating(entry?.overallRating || 0);
     setRead(entry?.read || false);
   }, [entry]);
+
+  console.log(entry);
+
+  const handleDateChange = (date) => {
+    setStartDate(date);
+  };
 
   const updateContent = (event) => {
     setContent(event.target.value);
@@ -95,6 +109,7 @@ export default function ReviewEdit() {
       impactfulnessRating,
       overallRating,
       read,
+      startDate,
     };
     if (!entry?.date) {
       payload.date = new Date();
@@ -122,6 +137,21 @@ export default function ReviewEdit() {
         }
         label="Read"
       />
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <KeyboardDatePicker
+          disableToolbar
+          variant="inline"
+          format="MM/dd/yyyy"
+          margin="normal"
+          id="date-picker-inline"
+          label="Date Started"
+          value={startDate}
+          onChange={handleDateChange}
+          KeyboardButtonProps={{
+            "aria-label": "change date",
+          }}
+        />
+      </MuiPickersUtilsProvider>
       <LivreRating
         label="Characters"
         rating={characterRating}
