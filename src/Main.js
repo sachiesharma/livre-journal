@@ -1,14 +1,13 @@
+import { Box, Container, Fab, Grid, LinearProgress } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { ExitToApp } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
 import "firebase/firestore";
-
-import { Box, Container, Fab, Grid, LinearProgress } from "@material-ui/core";
-import { useAuth, useFirestore, useUser } from "reactfire";
-
-import AddIcon from "@material-ui/icons/Add";
-import AvatarHeader from "./AvatarHeader";
-import { ExitToApp } from "@material-ui/icons";
+import { collection, doc } from "firebase/firestore";
 import { Link } from "react-router-dom";
+import { useAuth, useFirestore, useUser } from "reactfire";
+import AvatarHeader from "./AvatarHeader";
 import Reviews from "./Reviews";
-import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -21,17 +20,15 @@ export default function Main() {
   const classes = useStyles();
   const { status, data: user } = useUser();
   const auth = useAuth();
-  const firestore = useFirestore();
+  const db = useFirestore();
 
   if (user === null || status === "loading") {
     return <LinearProgress />;
   }
 
-  const entryId = firestore
-    .collection("users")
-    .doc(user.uid)
-    .collection("entries")
-    .doc().id;
+  const entryId = doc(
+    collection(doc(collection(db, "users"), user.uid), "entries")
+  ).id;
 
   return (
     <>

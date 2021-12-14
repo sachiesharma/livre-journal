@@ -1,7 +1,7 @@
-import { Button, Container, makeStyles } from "@material-ui/core";
-
+import { Button, Container } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { FcGoogle } from "react-icons/fc";
-import firebase from "firebase/app";
 import { useAuth } from "reactfire";
 
 const useStyles = makeStyles((theme) => ({
@@ -20,8 +20,8 @@ export default function Login() {
   const auth = useAuth();
   const classes = useStyles();
 
-  const signIn = async () => {
-    await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+  const signIn = () => {
+    signInWithPopup(auth, new GoogleAuthProvider());
   };
 
   return (

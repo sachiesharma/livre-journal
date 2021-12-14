@@ -1,21 +1,26 @@
-import "firebase/auth";
-
+import MoreIcon from "@mui/icons-material/MoreVert";
 import {
   AppBar,
   Container,
+  createTheme,
   CssBaseline,
   IconButton,
+  StyledEngineProvider,
   ThemeProvider,
   Toolbar,
-  createTheme,
   useMediaQuery,
-} from "@material-ui/core";
-
-import { FirebaseAppProvider } from "reactfire";
-import MoreIcon from "@material-ui/icons/MoreVert";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import "firebase/auth";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import {
+  AuthProvider,
+  FirebaseAppProvider,
+  FirestoreProvider,
+  useFirebaseApp,
+} from "reactfire";
 import Routes from "./Routes";
-import { makeStyles } from "@material-ui/core/styles";
-import { useMemo } from "react";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -48,45 +53,59 @@ function Main() {
 
   return (
     <Container disableGutters className={classes.container} maxWidth="sm">
-      <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-        <AppBar position="static">
-          <Toolbar>
-            <div className={classes.grow} />
-            <div className={classes.sectionMobile}>
-              <IconButton
-                aria-label="show more"
-                aria-haspopup="true"
-                //onClick={handleMobileMenuOpen}
-                color="inherit"
-              >
-                <MoreIcon />
-              </IconButton>
-            </div>
-          </Toolbar>
-        </AppBar>
-        <Routes />
-      </FirebaseAppProvider>
+      <AppBar position="static">
+        <Toolbar>
+          <div className={classes.grow} />
+          <div className={classes.sectionMobile}>
+            <IconButton
+              aria-label="show more"
+              aria-haspopup="true"
+              //onClick={handleMobileMenuOpen}
+              color="inherit"
+              size="large"
+            >
+              <MoreIcon />
+            </IconButton>
+          </div>
+        </Toolbar>
+      </AppBar>
+      <Routes />
     </Container>
+  );
+}
+
+function FirebaseComponents() {
+  const app = useFirebaseApp();
+
+  const firestore = getFirestore(app);
+  const auth = getAuth(app);
+
+  return (
+    <AuthProvider sdk={auth}>
+      <FirestoreProvider sdk={firestore}>
+        <Main />
+      </FirestoreProvider>
+    </AuthProvider>
   );
 }
 
 export default function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          type: prefersDarkMode ? "dark" : "light",
-        },
-      }),
-    [prefersDarkMode]
-  );
+  const theme = createTheme({
+    palette: {
+      mode: prefersDarkMode ? "dark" : "light",
+    },
+  });
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Main />
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+          <CssBaseline />
+          <FirebaseComponents />
+        </FirebaseAppProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }

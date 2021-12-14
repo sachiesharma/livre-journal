@@ -4,7 +4,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import { useUser } from "reactfire";
 

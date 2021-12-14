@@ -1,16 +1,14 @@
-import { LinearProgress, List, ListSubheader } from "@material-ui/core";
-import { useFirestore, useFirestoreCollectionData, useUser } from "reactfire";
-
+import { LinearProgress, List, ListSubheader } from "@mui/material";
+import { limit, orderBy, query } from "firebase/firestore";
+import { useFirestoreCollectionData } from "reactfire";
+import { useEntries } from "./hooks.js";
 import Review from "./Review.js";
 
 export default function Reviews() {
-  const { data: user } = useUser();
-  const entriesRef = useFirestore()
-    .collection("users")
-    .doc(user.uid)
-    .collection("entries")
-    .orderBy("date", "desc")
-    .limit(10);
+  const allEntries = useEntries();
+
+  const entriesRef = query(allEntries, orderBy("date", "desc"), limit(10));
+
   const { status, data: entries } = useFirestoreCollectionData(entriesRef, {
     idField: "id",
   });

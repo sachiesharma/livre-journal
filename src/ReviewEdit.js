@@ -1,4 +1,8 @@
-import "date-fns";
+import DoneIcon from "@mui/icons-material/Done";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { LocalizationProvider, MobileDatePicker } from "@mui/lab";
+import DateAdapter from "@mui/lab/AdapterDateFns";
 import {
   Box,
   Fab,
@@ -6,22 +10,16 @@ import {
   Grid,
   Switch,
   TextField,
-  makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
+import Rating from "@mui/material/Rating";
+import Typography from "@mui/material/Typography";
+import makeStyles from "@mui/styles/makeStyles";
+import withStyles from "@mui/styles/withStyles";
+import { doc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useFirestore, useFirestoreDocData, useUser } from "reactfire";
 import { useHistory, useParams } from "react-router-dom";
-
-import DoneIcon from "@material-ui/icons/Done";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import Rating from "@material-ui/lab/Rating";
-import Typography from "@material-ui/core/Typography";
-import { withStyles } from "@material-ui/core/styles";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
+import { useFirestoreDocData } from "reactfire";
+import { useEntries } from "./hooks";
 
 const useStyles = makeStyles((theme) => ({
   textField: {
@@ -46,13 +44,9 @@ export default function ReviewEdit() {
   const classes = useStyles();
   const history = useHistory();
   const { entryId } = useParams();
-  const { data: user } = useUser();
+  const allEntries = useEntries();
 
-  const entryRef = useFirestore()
-    .collection("users")
-    .doc(user.uid)
-    .collection("entries")
-    .doc(entryId);
+  const entryRef = doc(allEntries, entryId);
 
   const { data: entry } = useFirestoreDocData(entryRef, {
     idField: "id",
@@ -86,9 +80,7 @@ export default function ReviewEdit() {
     setRead(entry?.read || false);
   }, [entry]);
 
-  console.log(entry);
-
-  const handleDateChange = (date) => {
+  const handleStartDateChange = (date) => {
     setStartDate(date);
   };
 
@@ -114,7 +106,7 @@ export default function ReviewEdit() {
     if (!entry?.date) {
       payload.date = new Date();
     }
-    entryRef.set(payload, { merge: true });
+    setDoc(entryRef, payload, { merge: true });
     history.push("/");
   };
 
@@ -137,21 +129,15 @@ export default function ReviewEdit() {
         }
         label="Read"
       />
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-          disableToolbar
-          variant="inline"
-          format="MM/dd/yyyy"
-          margin="normal"
-          id="date-picker-inline"
-          label="Date Started"
+      <LocalizationProvider dateAdapter={DateAdapter}>
+        <MobileDatePicker
+          label="Start date"
+          inputFormat="MM/dd/yyyy"
           value={startDate}
-          onChange={handleDateChange}
-          KeyboardButtonProps={{
-            "aria-label": "change date",
-          }}
+          onChange={handleStartDateChange}
+          renderInput={(params) => <TextField {...params} />}
         />
-      </MuiPickersUtilsProvider>
+      </LocalizationProvider>
       <LivreRating
         label="Characters"
         rating={characterRating}
@@ -219,6 +205,7 @@ function LivreRating({ label, rating, setRating }) {
         name={`${label}-rating`}
         precision={0.5}
         icon={<FavoriteIcon fontSize="inherit" />}
+        emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
         value={rating}
         onChange={(event, newRating) => {
           setRating(newRating);

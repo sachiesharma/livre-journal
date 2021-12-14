@@ -1,6 +1,6 @@
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
-import { LinearProgress } from "@material-ui/core";
+import { LinearProgress } from "@mui/material";
 import Login from "./Login";
 import Main from "./Main";
 import ReviewEdit from "./ReviewEdit";
